@@ -1507,8 +1507,8 @@ function showResults(){
     if(!classStats[q.class])classStats[q.class]={earned:0,possible:0,count:0};classStats[q.class].earned+=sc.earned;classStats[q.class].possible+=sc.possible;classStats[q.class].count++;
   });
   const pct=totalP>0?Math.round(totalE/totalP*100):0;
-  const grade=pct>=85?'Pass — at or above NCLEX benchmark':pct>=75?'Near passing — review weak areas':'Below passing — significant review needed';
-  const gc=pct>=85?'var(--ok)':pct>=75?'var(--warn)':'var(--bad)';
+  const grade=pct>=75?'Pass — at or above benchmark':'Below passing — review needed';
+  const gc=pct>=75?'var(--ok)':'var(--bad)';
   const full=activeQs.filter(q=>qScores[q.id].detail==='full').length;
   const part=activeQs.filter(q=>qScores[q.id].detail==='partial').length;
   const zero=activeQs.filter(q=>qScores[q.id].detail==='zero').length;
@@ -1548,7 +1548,7 @@ function showResults(){
       <div class="collapsible-body open" style="padding:.75rem 1rem">
         <div class="trend-chart">${show.map((e,i)=>{
           const h2=Math.max(4,Math.round((e.pct/maxPctH)*72));
-          const bc=e.pct>=85?'var(--ok)':e.pct>=75?'var(--warn)':'var(--bad)';
+          const bc=e.pct>=75?'var(--ok)':'var(--bad)';
           const d=new Date(e.date);const lbl=`${d.getMonth()+1}/${d.getDate()}`;const isCur=i===show.length-1;
           return`<div class="trend-bar-wrap">
             <div class="trend-score" style="color:${isCur?bc:'var(--tl)'}">${e.pct}%</div>
@@ -1564,10 +1564,10 @@ function showResults(){
     </div>`;
   }
 
-  h+=`<div class="collapsible-wrap" style="margin-bottom:1rem"><div class="collapsible-header" onclick="toggleCollapsible(this)"><span style="font-size:14px;font-weight:500;color:var(--tp)">How is this scored? (NGN partial credit)</span><span class="collapsible-arrow">▼</span></div><div class="collapsible-body"><p style="font-size:13px;color:var(--ts);margin-bottom:.75rem;line-height:1.6">This exam uses the same scoring model as the current NGN NCLEX.</p>${Object.entries(typeStats).map(([type,s])=>{const p=s.possible>0?Math.round(s.earned/s.possible*100):0,bc=p>=80?'var(--ok)':p>=60?'var(--warn)':'var(--bad)';return`<div class="ngn-row"><div style="flex:1"><div class="ngn-type">${TM[type]||type} <span style="font-size:11px;color:var(--tl);font-weight:400">(${s.count}q)</span></div><div class="ngn-rule">${typeRules[type]||''}</div></div><div style="display:flex;align-items:center;gap:8px;flex-shrink:0"><div style="width:60px;background:var(--bgd);border-radius:3px;height:5px;overflow:hidden"><div style="width:${p}%;background:${bc};height:5px;border-radius:3px"></div></div><span class="ngn-pts">${s.earned}/${s.possible} (${p}%)</span></div></div>`;}).join('')}</div></div>`;
+  h+=`<div class="collapsible-wrap" style="margin-bottom:1rem"><div class="collapsible-header" onclick="toggleCollapsible(this)"><span style="font-size:14px;font-weight:500;color:var(--tp)">How is this scored? (NGN partial credit)</span><span class="collapsible-arrow">▼</span></div><div class="collapsible-body"><p style="font-size:13px;color:var(--ts);margin-bottom:.75rem;line-height:1.6">This exam uses the same scoring model as the current NGN NCLEX.</p>${Object.entries(typeStats).map(([type,s])=>{const p=s.possible>0?Math.round(s.earned/s.possible*100):0,bc=p>=75?'var(--ok)':'var(--bad)';return`<div class="ngn-row"><div style="flex:1"><div class="ngn-type">${TM[type]||type} <span style="font-size:11px;color:var(--tl);font-weight:400">(${s.count}q)</span></div><div class="ngn-rule">${typeRules[type]||''}</div></div><div style="display:flex;align-items:center;gap:8px;flex-shrink:0"><div style="width:60px;background:var(--bgd);border-radius:3px;height:5px;overflow:hidden"><div style="width:${p}%;background:${bc};height:5px;border-radius:3px"></div></div><span class="ngn-pts">${s.earned}/${s.possible} (${p}%)</span></div></div>`;}).join('')}</div></div>`;
 
   const te=Object.entries(topicStats).sort((a,b)=>{const pa=a[1].possible>0?a[1].earned/a[1].possible:0,pb=b[1].possible>0?b[1].earned/b[1].possible:0;return pa-pb;});
-  if(te.length>1){h+=`<div class="card-sm" style="margin-bottom:1rem"><div class="sec-label" style="margin-top:0">Topic performance — weakest to strongest</div>${te.map(([t,s])=>{const p=s.possible>0?Math.round(s.earned/s.possible*100):0,bc=p>=80?'var(--ok)':p>=60?'var(--warn)':'var(--bad)';return`<div class="topic-bar-row"><div style="flex:1;color:var(--tp)">${t}</div><div class="topic-bar-bg"><div class="topic-bar-fill" style="width:${p}%;background:${bc}"></div></div><div style="min-width:60px;text-align:right;font-size:12px;font-family:'DM Mono',monospace;color:var(--ts)">${s.earned}/${s.possible} (${p}%)</div></div>`;}).join('')}</div>`;}
+  if(te.length>1){h+=`<div class="card-sm" style="margin-bottom:1rem"><div class="sec-label" style="margin-top:0">Topic performance — weakest to strongest</div>${te.map(([t,s])=>{const p=s.possible>0?Math.round(s.earned/s.possible*100):0,bc=p>=75?'var(--ok)':'var(--bad)';return`<div class="topic-bar-row"><div style="flex:1;color:var(--tp)">${t}</div><div class="topic-bar-bg"><div class="topic-bar-fill" style="width:${p}%;background:${bc}"></div></div><div style="min-width:60px;text-align:right;font-size:12px;font-family:'DM Mono',monospace;color:var(--ts)">${s.earned}/${s.possible} (${p}%)</div></div>`;}).join('')}</div>`;}
 
   h+=`<div class="card-sm" style="margin-bottom:1rem"><div class="sec-label" style="margin-top:0">Question-by-question review</div><div class="hint" style="margin-bottom:.75rem">Tap any question to review it with the full explanation.</div>`;
   activeQs.forEach((q,i)=>{
