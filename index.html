@@ -116,6 +116,12 @@ p{font-size:14px;color:var(--ts);line-height:1.6}
 .ch-chip:hover{background:var(--bgd);color:var(--tp)}
 .ch-chip.on{background:var(--acc-l);border-color:var(--acc-m);color:var(--acc);font-weight:500}
 .ch-chip.partial{background:var(--warn-bg);border-color:var(--warn-b);color:var(--warn)}
+.ch-chip.jeopardy{border-color:var(--bds);color:var(--ts);background:var(--bg);font-style:italic}
+.ch-chip.jeopardy:hover{background:var(--bgd);color:var(--tp)}
+.ch-chip.jeopardy.on{background:var(--guess-bg);border-color:var(--guess-b);color:var(--guess);font-weight:500;font-style:italic}
+.ch-chip.ai-gen{border-color:var(--bds);color:var(--ts);background:var(--bg);font-style:italic}
+.ch-chip.ai-gen:hover{background:var(--bgd);color:var(--tp)}
+.ch-chip.ai-gen.on{background:var(--tutor-bg);border-color:var(--tutor-b);color:var(--tutor);font-weight:500;font-style:italic}
 .class-section-header{display:flex;align-items:center;justify-content:space-between;padding:.85rem 1rem;gap:10px;flex-wrap:wrap;cursor:pointer;user-select:none;transition:background .12s}
 .class-section-header:hover{background:var(--bgs)}
 .class-section-header.open{border-bottom:.5px solid var(--bd)}
@@ -254,7 +260,6 @@ p{font-size:14px;color:var(--ts);line-height:1.6}
 .opt.sel{border-color:var(--acc-m);background:var(--acc-l);color:var(--acc)}
 .opt.ok{border-color:var(--ok-b);background:var(--ok-bg)}
 .opt.bad{border-color:var(--bad-b);background:var(--bad-bg)}
-.opt.miss{border-color:var(--ok-b);background:var(--ok-bg);opacity:.55}
 .opt.disabled .opt-main{cursor:default}
 .opt.elim .opt-text{text-decoration:line-through;opacity:.4}
 .opt.elim{opacity:.5}
@@ -265,10 +270,13 @@ p{font-size:14px;color:var(--ts);line-height:1.6}
 .opt.sel .oi{background:var(--acc);border-color:var(--acc);color:#fff}
 .opt.sel .oi::after{content:'●'}
 .opt.sel .oi.sq::after{content:'✓'}
-.opt.ok .oi,.opt.miss .oi{background:var(--ok);border-color:var(--ok);color:#fff}
-.opt.ok .oi::after,.opt.miss .oi::after{content:'✓'}
+.opt.ok .oi{background:var(--ok);border-color:var(--ok);color:#fff}
+.opt.ok .oi::after{content:'✓'}
 .opt.bad .oi{background:var(--bad);border-color:var(--bad);color:#fff}
 .opt.bad .oi::after{content:'✕'}
+/* Missed correct option — light green bg, empty green-bordered box, no checkmark. Applies to all question types. */
+.opt.miss,.opt.miss-sata{border-color:var(--ok-b);background:var(--ok-bg);opacity:.55}
+.opt.miss .oi,.opt.miss-sata .oi{border-color:var(--ok);background:transparent}
 .opt-text{flex:1}
 
 /* Single eliminate button */
@@ -280,7 +288,7 @@ p{font-size:14px;color:var(--ts);line-height:1.6}
 .opt-rat{font-size:13px;line-height:1.6;padding:10px 14px 12px 14px;border-top:.5px solid var(--bd);color:var(--ts);width:100%;display:block}
 .opt.ok .opt-rat{background:var(--ok-bg);color:var(--ok)}
 .opt.bad .opt-rat{background:var(--bad-bg);color:var(--bad)}
-.opt.miss .opt-rat{background:var(--ok-bg);color:var(--ok);opacity:.85}
+.opt.miss .opt-rat,.opt.miss-sata .opt-rat{background:var(--ok-bg);color:var(--ok);opacity:.85}
 
 /* Correct answer display for drag and drop */
 .drag-correct-wrap{margin-top:1rem;background:var(--ok-bg);border:.5px solid var(--ok-b);border-radius:var(--r8);padding:.85rem 1rem}
@@ -336,18 +344,21 @@ p{font-size:14px;color:var(--ts);line-height:1.6}
 .mx td:first-child{font-size:13px;color:var(--tp)}
 .mx td:not(:first-child){text-align:center}
 .mx input[type=radio]{width:20px;height:20px;accent-color:var(--acc);cursor:pointer}
-/* Drag */
-.dz-pool-lbl{font-size:11px;font-weight:500;color:var(--tl);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
-.dz-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
-@media(max-width:500px){.dz-grid{grid-template-columns:1fr}}
-.drop-zone{min-height:70px;border:1.5px dashed var(--bds);border-radius:var(--r8);padding:8px;transition:all .15s}
-.drop-zone.drag-over{background:var(--acc-l);border-color:var(--acc)}
-.di{padding:10px 12px;border:.5px solid var(--bd);border-radius:var(--r8);margin-bottom:5px;font-size:13px;background:var(--bg);user-select:none;color:var(--tp);touch-action:none;cursor:grab;min-height:44px;display:flex;align-items:center}
-.di:last-child{margin-bottom:0}
-.di.dragging{opacity:.4;cursor:grabbing}
-.di.ok{background:var(--ok-bg);border-color:var(--ok-b);color:var(--ok)}
-.di.bad{background:var(--bad-bg);border-color:var(--bad-b);color:var(--bad)}
-.dz-zone-lbl{font-size:12px;font-weight:500;color:var(--ts);margin-bottom:6px;text-align:center}
+/* Drag reorder list */
+.drag-list-wrap{margin-bottom:.5rem}
+.drag-list-hint{font-size:12px;color:var(--ts);margin-bottom:8px}
+.drag-reorder-list{display:flex;flex-direction:column;gap:5px}
+.drl-item{display:flex;align-items:center;gap:10px;padding:11px 13px;border:.5px solid var(--bd);border-radius:var(--r8);font-size:14px;color:var(--tp);background:var(--bg);cursor:grab;user-select:none;touch-action:none;min-height:44px;transition:all .12s}
+.drl-item:hover{background:var(--bgs);border-color:var(--bds)}
+.drl-item.drl-over{border-color:var(--acc);background:var(--acc-l);color:var(--acc)}
+.drl-item.drl-dragging{opacity:.35;cursor:grabbing}
+.drl-handle{color:var(--tl);font-size:14px;flex-shrink:0;cursor:grab}
+.drl-text{flex:1;line-height:1.45}
+.drl-rank{font-size:12px;font-weight:600;font-family:'DM Mono',monospace;min-width:18px;flex-shrink:0;color:var(--ts)}
+.drl-result{font-size:14px;flex-shrink:0;font-weight:600}
+.drl-item.drl-locked{cursor:default}
+.drl-item.drl-ok{border-color:var(--ok-b);background:var(--ok-bg);color:var(--ok)}
+.drl-item.drl-bad{border-color:var(--bad-b);background:var(--bad-bg);color:var(--bad)}
 
 /* Results */
 .res-score-card{text-align:center;padding:2rem 1.5rem 1.5rem;background:var(--bg);border:.5px solid var(--bd);border-radius:var(--r16);box-shadow:var(--shadow);margin-bottom:1rem}
@@ -527,7 +538,7 @@ p{font-size:14px;color:var(--ts);line-height:1.6}
     <!-- STATUS FILTER -->
     <div style="display:flex;align-items:center;justify-content:space-between;margin-top:1.25rem;margin-bottom:.5rem">
       <div class="sec-label" style="margin:0">Question status</div>
-      <button class="filt-btn muted" onclick="resetAllStatus()" style="font-size:11px;padding:4px 12px">Reset</button>
+      <button class="filt-btn muted" onclick="showModal('Reset question status?','This will clear your Correct, Partial, and Incorrect history for all '+BANK.length+' questions — they will all return to Unused. This cannot be undone.','Reset all',()=>{closeModal();resetAllStatus();})" style="font-size:11px;padding:4px 12px">Reset</button>
     </div>
     <div class="status-filter-wrap" id="status-filter"></div>
 
@@ -622,7 +633,14 @@ function scoreQ(q,ans){
     case'bowtie':{const a=ans||{};const ao=q.correctActions.every(x=>(a.actions||[]).includes(x))&&(a.actions||[]).length===q.correctActions.length;const co=a.condition===q.correctCondition;const mo=q.correctMonitor.every(x=>(a.monitor||[]).includes(x))&&(a.monitor||[]).length===q.correctMonitor.length;const p=(ao?1:0)+(co?1:0)+(mo?1:0);return{earned:p,possible:3,pct:p/3,detail:p===3?'full':p>0?'partial':'zero'};}
     case'matrix':{const s=ans||{};const n=q.rows.length;const p=q.correct.filter((_,i)=>s[i]===q.correct[i]).length;return{earned:p,possible:n,pct:p/n,detail:p===n?'full':p>0?'partial':'zero'};}
     case'fillin':{const v=(ans||'').toLowerCase().trim();const ok=q.acceptKeywords.some(k=>v.includes(k.toLowerCase()));return{earned:ok?1:0,possible:1,pct:ok?1:0,detail:ok?'full':'zero'};}
-    case'drag':{const p2=ans||{};const n=q.items.length;const p=q.items.filter((_,i)=>{const zone=q.correctZones[i];return(p2[zone]||[]).includes(i);}).length;return{earned:p,possible:n,pct:p/n,detail:p===n?'full':p>0?'partial':'zero'};}
+    case'drag':{
+      // ans = array of item indices in user's order e.g. [2,0,3,1]
+      // correctOrder[rank] = correct itemIdx for that rank
+      const a=Array.isArray(ans)?ans:[];
+      const n=q.correctOrder.length;
+      const p=q.correctOrder.filter((correctItemIdx,rank)=>a[rank]===correctItemIdx).length;
+      return{earned:p,possible:n,pct:n>0?p/n:0,detail:p===n?'full':p>0?'partial':'zero'};
+    }
     default:return{earned:0,possible:1,pct:0,detail:'zero'};
   }
 }
@@ -630,11 +648,12 @@ function maxPts(q){switch(q.type){case'mcq':case'fillin':return 1;case'sata':ret
 function hasAnswer(q,ans){
   if(ans===undefined||ans===null)return false;
   switch(q.type){
-    case'mcq':case'sata':return Array.isArray(ans)&&ans.length>0;
+    case'mcq':return Array.isArray(ans)&&ans.length>0;
+    case'sata':return Array.isArray(ans)&&ans.length>0; // must have at least one selection
     case'bowtie':return ans.condition!==null&&ans.condition!==undefined;
     case'matrix':return Object.keys(ans).length>0;
     case'fillin':return typeof ans==='string'&&ans.trim().length>0;
-    case'drag':return Object.values(ans||{}).flat().length>0;
+    case'drag':return Array.isArray(ans)&&ans.length>0;
     default:return ans!==null&&ans!==undefined;
   }
 }
@@ -662,6 +681,7 @@ function toggleFormat(key){
 // FILTER STATE
 // ═══════════════════════════════════════════════════════════════
 let selTopics=new Set();
+let selChapterKeys=new Set(); // "unit§chapter" keys for chip coloring only — independent of topic name overlap
 let collapsedEcg=new Set();     // ECG subsection collapsed state
 let topicsOpen=false;           // topics section collapsed by default
 
@@ -673,7 +693,7 @@ function classSelectionState(cls){const t=topicsForClass(cls),n=t.filter(x=>selT
 // ═══════════════════════════════════════════════════════════════
 const SK='nclex_practice_v13',SK_SET='nclex_settings_v13',SK_HIST='nclex_history_v1',SK_STATUS='nclex_qstatus_v1';
 function saveSettings(){
-  try{localStorage.setItem(SK_SET,JSON.stringify({mode:examMode,mpq:document.getElementById('mins-per-q').value,numQ:document.getElementById('num-q').value,order:document.getElementById('q-order').value,formats:[...selFormats],topics:[...selTopics],statuses:[...selStatuses]}));}catch(e){}
+  try{localStorage.setItem(SK_SET,JSON.stringify({mode:examMode,mpq:document.getElementById('mins-per-q').value,numQ:document.getElementById('num-q').value,order:document.getElementById('q-order').value,formats:[...selFormats],topics:[...selTopics],chapterKeys:[...selChapterKeys],statuses:[...selStatuses]}));}catch(e){}
 }
 function loadSettings(){
   try{
@@ -685,11 +705,12 @@ function loadSettings(){
     if(p.order)document.getElementById('q-order').value=p.order;
     if(p.formats){const valid=new Set(BANK.map(q=>q.type));selFormats=new Set((p.formats||[]).filter(f=>valid.has(f)));if(selFormats.size===0)selFormats=new Set(valid);}
     if(p.topics){const valid=new Set(BANK.map(q=>q.topic));selTopics=new Set((p.topics||[]).filter(t=>valid.has(t)));}
+    if(p.chapterKeys)selChapterKeys=new Set(p.chapterKeys);
     if(p.statuses)selStatuses=new Set(p.statuses);
   }catch(e){}
 }
 function saveSession(){
-  try{localStorage.setItem(SK,JSON.stringify({ids:activeQs.map(q=>q.id),curQ,answers,selections,guessed,elim,highlights,mode:examMode,ended:examEnded,timerLeft,timerTotal}));}catch(e){}
+  try{localStorage.setItem(SK,JSON.stringify({ids:activeQs.map(q=>q.id),curQ,answers,selections,guessed,elim,highlights,optOrders,mode:examMode,ended:examEnded,timerLeft,timerTotal}));}catch(e){}
 }
 function loadSession(){
   try{
@@ -697,7 +718,7 @@ function loadSession(){
     const p=JSON.parse(d);const idMap={};BANK.forEach(q=>idMap[q.id]=q);
     const qs=(p.ids||[]).map(id=>idMap[id]).filter(Boolean);if(!qs.length)return false;
     activeQs=qs;curQ=p.curQ||0;answers=p.answers||{};selections=p.selections||{};guessed=p.guessed||{};
-    elim=p.elim||{};highlights=p.highlights||{};
+    elim=p.elim||{};highlights=p.highlights||{};optOrders=p.optOrders||{};
     examMode=p.mode||'tutor';examEnded=p.ended||false;timerLeft=p.timerLeft||0;timerTotal=p.timerTotal||0;
     return true;
   }catch(e){return false;}
@@ -734,6 +755,7 @@ function saveHistory(entry){
 // EXAM STATE
 // ═══════════════════════════════════════════════════════════════
 let activeQs=[],curQ=0,answers={},selections={},guessed={};
+let optOrders={}; // {qid: [shuffled index array]} — stable per session for MCQ/SATA
 // Report issue state
 let reportSelections={}; // {qid: [issueTypes]}
 // Report issue state (per question, not persisted)
@@ -748,7 +770,8 @@ let hlMode=false;
 let calcExpr='',calcCurrent='0',calcNewNum=true,calcOpen=false;
 
 // Touch drag state
-let touchDragItem=null,touchDragQid=null,touchDragIdx=null,touchDragEl=null,touchClone=null;
+
+
 
 
 // ═══════════════════════════════════════════════════════════════
@@ -759,7 +782,7 @@ function initApp(){
   loadSettings();
   document.getElementById('load-screen').style.display='none';
   const had=loadSession(),n=Object.keys(answers).length;
-  if(had&&n>0){
+  if(had&&n>0&&!examEnded){
     showBuilder();
     const note=document.getElementById('save-note');note.style.display='block';
     note.innerHTML=`You have a saved session (${examMode==='test'?'🎯 Test':'📖 Tutor'} mode, ${n}/${activeQs.length} answered). <button class="btn btn-o" style="padding:6px 14px;font-size:13px;margin-left:6px" onclick="resumeExam()">Resume</button> <button class="btn btn-o" style="padding:6px 14px;font-size:13px;margin-left:4px" onclick="clearSession()">Discard</button>`;
@@ -837,11 +860,11 @@ const buildUnitChapters=()=>{
     if(!map[u])map[u]=new Set();
     map[u].add(ch);
   });
-  // Sort units and chapters within each unit
+  // Sort units and chapters within each unit — numbered chapters first, Jeopardy Review last
   const sorted={};
   ['Unit 1','Unit 2','Unit 3','Unit 4'].forEach(u=>{
     if(map[u])sorted[u]=[...map[u]].sort((a,b)=>{
-      const n=s=>parseInt(s.match(/\d+/)?.[0]||'0');
+      const n=s=>s==='Jeopardy Review'?9998:s==='AI Generated'?9999:parseInt(s.match(/\d+/)?.[0]||'0');
       return n(a)-n(b);
     });
   });
@@ -855,7 +878,18 @@ const topicsByChapter=ch=>[...new Set(BANK.filter(q=>q.chapter===ch).map(q=>q.to
 function quickSelectChapter(unit,ch){
   const ts=topicsByUnitChapter(unit,ch);
   const allSel=ts.every(t=>selTopics.has(t));
-  ts.forEach(t=>allSel?selTopics.delete(t):selTopics.add(t));
+  const chapKey=`${unit}§${ch}`;
+  if(allSel){
+    // Deselect — remove topics (only remove if no other selected chapter in this unit uses same topic)
+    ts.forEach(t=>{
+      const otherChapterHasIt=BANK.some(q=>q.unit===unit&&q.chapter!==ch&&q.topic===t&&selChapterKeys.has(`${unit}§${q.chapter}`));
+      if(!otherChapterHasIt)selTopics.delete(t);
+    });
+    selChapterKeys.delete(chapKey);
+  }else{
+    ts.forEach(t=>selTopics.add(t));
+    selChapterKeys.add(chapKey);
+  }
   saveSettings();buildClassSections();updateCount();
 }
 // ═══════════════════════════════════════════════════════════════
@@ -886,9 +920,15 @@ function buildClassSection(cls){
     chapters.forEach(ch=>{
       const chTopics=topicsByUnitChapter(unit,ch).filter(t=>topics.includes(t));
       if(chTopics.length===0)return;
-      const chAllSel=chTopics.every(t=>selTopics.has(t));
-      const chSomeSel=chTopics.some(t=>selTopics.has(t))&&!chAllSel;
-      qfHtml+=`<button class="ch-chip${chAllSel?' on':chSomeSel?' partial':''}" onclick="quickSelectChapter('${esc(unit)}','${esc(ch)}')">${ch}</button>`;
+      // Use selChapterKeys for chip coloring — avoids cross-chapter topic name bleed
+      const chapKey=`${unit}§${ch}`;
+      const chAllSel=selChapterKeys.has(chapKey);
+      const chSomeSel=!chAllSel&&chTopics.some(t=>selTopics.has(t)&&selChapterKeys.has(chapKey));
+      const isJeopardy=ch==='Jeopardy Review';
+      const isAiGen=ch==='AI Generated';
+      const baseClass=isJeopardy?' jeopardy':isAiGen?' ai-gen':'';
+      const label=isJeopardy?'🎯 '+ch:isAiGen?'🤖 '+ch:ch;
+      qfHtml+=`<button class="ch-chip${baseClass}${chAllSel?' on':chSomeSel?' partial':''}" onclick="quickSelectChapter('${esc(unit)}','${esc(ch)}')">${label}</button>`;
     });
     qfHtml+=`</div></div>`;
   });
@@ -935,25 +975,57 @@ function quickSelectUnit(unit){
   const chapters=UNIT_CHAPTERS[unit]||[];
   const ts=chapters.flatMap(ch=>topicsByUnitChapter(unit,ch));
   const allSel=ts.every(t=>selTopics.has(t));
-  ts.forEach(t=>allSel?selTopics.delete(t):selTopics.add(t));
+  if(allSel){
+    ts.forEach(t=>selTopics.delete(t));
+    chapters.forEach(ch=>selChapterKeys.delete(`${unit}§${ch}`));
+  }else{
+    ts.forEach(t=>selTopics.add(t));
+    chapters.forEach(ch=>selChapterKeys.add(`${unit}§${ch}`));
+  }
   saveSettings();buildClassSections();updateCount();
 }
 function clearUnit(unit){
   const UNIT_CHAPTERS=buildUnitChapters();
   const chapters=UNIT_CHAPTERS[unit]||[];
   chapters.flatMap(ch=>topicsByUnitChapter(unit,ch)).forEach(t=>selTopics.delete(t));
+  chapters.forEach(ch=>selChapterKeys.delete(`${unit}§${ch}`));
   saveSettings();buildClassSections();updateCount();
 }
 function quickSelectSystem(cls,sys){const ts=[...new Set(BANK.filter(q=>q.class===cls&&(Array.isArray(q.system)?q.system.includes(sys):q.system===sys)).map(q=>q.topic))];const allSel=ts.every(t=>selTopics.has(t));ts.forEach(t=>allSel?selTopics.delete(t):selTopics.add(t));saveSettings();refreshClassSection();}
-function selectAllTopics(){topicsForClass('220 Critical Care').forEach(t=>selTopics.add(t));saveSettings();buildClassSections();updateCount();}
-function clearAllTopics(){topicsForClass('220 Critical Care').forEach(t=>selTopics.delete(t));saveSettings();buildClassSections();updateCount();}
+function selectAllTopics(){
+  topicsForClass('220 Critical Care').forEach(t=>selTopics.add(t));
+  // Mark all chapters as selected
+  const UNIT_CHAPTERS=buildUnitChapters();
+  Object.entries(UNIT_CHAPTERS).forEach(([unit,chs])=>chs.forEach(ch=>selChapterKeys.add(`${unit}§${ch}`)));
+  saveSettings();buildClassSections();updateCount();
+}
+function clearAllTopics(){
+  topicsForClass('220 Critical Care').forEach(t=>selTopics.delete(t));
+  selChapterKeys.clear();
+  saveSettings();buildClassSections();updateCount();
+}
 function esc(s){return s.replace(/['"\\]/g,'\\$&');}
 
 // ═══════════════════════════════════════════════════════════════
 // COUNT + MODE
 // ═══════════════════════════════════════════════════════════════
 function getFiltered(){
-  if(selTopics.size===0||selFormats.size===0)return[];
+  if(selFormats.size===0)return[];
+  // If chapters have been explicitly selected via chips, filter by chapter+topic
+  // This prevents Jeopardy Review topics from pulling in Ch.14 questions with same topic names
+  if(selChapterKeys.size>0){
+    return BANK.filter(q=>{
+      if(!selFormats.has(q.type))return false;
+      if(selStatuses.size>0&&!selStatuses.has(getQStatus(q.id)))return false;
+      // Question must belong to a selected chapter OR have its topic selected via individual topic chip
+      const chapKey=`${q.unit}§${q.chapter}`;
+      const fromChapter=selChapterKeys.has(chapKey);
+      const fromTopicChip=!fromChapter&&selTopics.has(q.topic)&&selChapterKeys.size===0;
+      return fromChapter||fromTopicChip;
+    });
+  }
+  // Fallback: pure topic-name filtering (used when selecting individual topic chips)
+  if(selTopics.size===0)return[];
   return BANK.filter(q=>{
     if(!selTopics.has(q.topic))return false;
     if(!selFormats.has(q.type))return false;
@@ -964,7 +1036,8 @@ function getFiltered(){
 function updateCount(){
   const f=getFiltered(),req=parseInt(document.getElementById('num-q').value)||35,will=Math.min(req,f.length);
   const el=document.getElementById('q-count-info'),btn=document.getElementById('start-btn');
-  if(selTopics.size===0){el.textContent='Select topics above to get started.';el.className='q-count-info';btn.disabled=true;}
+  const nothingSelected=selChapterKeys.size===0&&selTopics.size===0;
+  if(nothingSelected){el.textContent='Select topics above to get started.';el.className='q-count-info';btn.disabled=true;}
   else if(f.length===0){el.textContent='No questions match the selected formats — try adjusting the format filter.';el.className='q-count-info empty';btn.disabled=true;}
   else{el.textContent=`${f.length} question${f.length!==1?'s':''} available · Will generate ${will} question${will!==1?'s':''} for this exam`;el.className='q-count-info ready';btn.disabled=false;}
   updateFilterSummary();
@@ -978,11 +1051,23 @@ function updateTimerPreview(){const mpq=parseFloat(document.getElementById('mins
 // START EXAM
 // ═══════════════════════════════════════════════════════════════
 function shuffle(a){return a.slice().sort(()=>Math.random()-.5);}
+// Get (or generate and store) a stable shuffled option order for MCQ/SATA
+function getOptOrder(q){
+  if(!['mcq','sata'].includes(q.type))return q.opts.map((_,i)=>i);
+  if(!optOrders[q.id]){
+    const idx=q.opts.map((_,i)=>i);
+    // Fisher-Yates shuffle
+    for(let i=idx.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[idx[i],idx[j]]=[idx[j],idx[i]];}
+    optOrders[q.id]=idx;
+    saveSession();
+  }
+  return optOrders[q.id];
+}
 function startExam(){
   const f=getFiltered();if(!f.length){alert('Please select at least one topic.');return;}
   const req=Math.min(parseInt(document.getElementById('num-q').value)||35,f.length);
   const pool=document.getElementById('q-order').value==='shuffle'?shuffle(f):[...f];
-  activeQs=pool.slice(0,req);curQ=0;answers={};selections={};guessed={};elim={};highlights={};examEnded=false;hlMode=false;
+  activeQs=pool.slice(0,req);curQ=0;answers={};selections={};guessed={};elim={};highlights={};optOrders={};examEnded=false;hlMode=false;
   if(examMode==='test'){const mpq=parseFloat(document.getElementById('mins-per-q').value)||2;timerTotal=Math.round(mpq*req*60);timerLeft=timerTotal;}
   try{localStorage.removeItem(SK);}catch(e){}
   document.getElementById('start-screen').style.display='none';
@@ -1136,16 +1221,18 @@ function buildQ(q,showFeedback){
 
   // ── MCQ / SATA ──
   if(q.type==='mcq'||q.type==='sata'){
-    // Use selections (pre-submit) in tutor mode; use answers (post-submit) once locked
     const sel=(locked ? (answers[q.id]||[]) : (isTutor ? (selections[q.id]||[]) : (answers[q.id]||[]))),isCheckbox=q.type==='sata';
-    h+=q.opts.map((o,i)=>{
+    const order=getOptOrder(q); // stable shuffled index array for this session
+    h+=order.map(i=>{
+      const o=q.opts[i];
       let c='opt';
       const isSel=sel.includes(i),isCorr=q.correct.includes(i);
       const isElim=!locked&&(qElim instanceof Set?qElim.has(i):false);
+      const isMiss=locked&&!isSel&&isCorr;
       if(locked){
         if(isSel&&isCorr)c+=' ok';
         else if(isSel&&!isCorr)c+=' bad';
-        else if(!isSel&&isCorr)c+=' miss';
+        else if(isMiss)c+=isCheckbox?' miss-sata':' miss';
         c+=' disabled';
       }else{
         if(isSel)c+=' sel';
@@ -1204,43 +1291,68 @@ function buildQ(q,showFeedback){
     }
   }
 
-  // ── DRAG AND DROP ──
+  // ── DRAG AND DROP (reorder list) ──
   if(q.type==='drag'){
-    const placed=(locked?(answers[q.id]||{}):(isTutor?(selections[q.id]||{}):(answers[q.id]||{})));
-    const allPlaced=Object.values(placed).flat();
-    const unplaced=q.items.map((_,i)=>i).filter(i=>!allPlaced.includes(i));
-    const numZones=q.zones.length;
-    h+=`<div>
-      <div class="dz-pool-lbl">Unplaced items — drag to a category below</div>
-      <div id="pool_${q.id}" class="drop-zone" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="doDrop(event,${q.id},-1)">
-        ${unplaced.map(i=>diH(q,i,locked)).join('')}
-        ${unplaced.length===0?'<span style="font-size:13px;color:var(--tl)">All items placed</span>':''}
-      </div>
-      <div class="dz-grid" style="grid-template-columns:repeat(${Math.min(numZones,3)},1fr)">${q.zones.map((zone,zi)=>{
-        const here=placed[zi]||[];
-        return`<div>
-          <div class="dz-zone-lbl">${zone}</div>
-          <div id="zone_${q.id}_${zi}" class="drop-zone" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="doDrop(event,${q.id},${zi})">
-            ${here.map(i=>diH(q,i,locked,zi)).join('')}
-            ${here.length===0?'<span style="font-size:12px;color:var(--tl)">Drop here</span>':''}
-          </div>
-        </div>`;
-      }).join('')}</div>
-    </div>`;
-    // Show correct arrangement after submission
-    if(locked){
-      const numZ=q.zones.length;
-      const colCss=numZ<=2?"grid-template-columns:repeat(2,1fr)":numZ===3?"grid-template-columns:repeat(3,1fr)":"grid-template-columns:repeat(auto-fill,minmax(140px,1fr))";
-      const correctZoneHtml=q.zones.map((zone,zi)=>{
-        const correctItems=q.items.map((item,ii)=>({item,ii})).filter(({ii})=>q.correctZones[ii]===zi);
-        const itemsHtml=correctItems.map(({item})=>"<div class=\"drag-correct-item\">\u00b7 "+item+"</div>").join("");
-        const emptyHtml=correctItems.length===0?"<div class=\"drag-correct-item\" style=\"opacity:.5\">No items</div>":"";
-        return"<div class=\"drag-correct-zone\"><div class=\"drag-correct-zone-lbl\">"+zone+"</div>"+itemsHtml+emptyHtml+"</div>";
-      }).join("");
-      h+="<div class=\"drag-correct-wrap\"><div class=\"drag-correct-title\">\u2713 Correct arrangement</div>";
-      h+="<div class=\"drag-correct-grid\" style=\""+colCss+"\">"+correctZoneHtml+"</div></div>";
+    // Answer stored as array of item indices in user's chosen order e.g. [2,0,3,1]
+    // Start with shuffled default order if no answer yet
+    const rawAns=locked?(answers[q.id]):(isTutor?(selections[q.id]):(answers[q.id]));
+    // Normalize object format (legacy) to array
+    let currentOrder;
+    if(Array.isArray(rawAns)&&rawAns.length===q.items.length){
+      currentOrder=rawAns;
+    } else if(rawAns&&typeof rawAns==='object'&&!Array.isArray(rawAns)){
+      // Convert zone map to array
+      const arr=[];
+      Object.entries(rawAns).sort((a,b)=>a[0]-b[0]).forEach(([zi,items])=>{if(items[0]!==undefined)arr.push(items[0]);});
+      currentOrder=arr.length===q.items.length?arr:q.items.map((_,i)=>i);
+    } else {
+      currentOrder=q.items.map((_,i)=>i); // default: items in original order
     }
-  }  // end if(q.type==='drag')
+
+    if(!locked){
+      // Save initial order if not yet answered
+      const store=examMode==='tutor'?selections:answers;
+      if(!store[q.id]){store[q.id]=[...currentOrder];saveSession();}
+
+      h+=`<div class="drag-list-wrap">
+        <div class="drag-list-hint">☰ Drag items to put them in the correct order</div>
+        <div class="drag-reorder-list" id="drl_${q.id}">
+          ${currentOrder.map((itemIdx,rank)=>`
+            <div class="drl-item" draggable="true"
+              data-qid="${q.id}" data-rank="${rank}"
+              ondragstart="drlDragStart(event,${q.id},${rank})"
+              ondragover="drlDragOver(event)"
+              ondragleave="drlDragLeave(event)"
+              ondrop="drlDrop(event,${q.id},${rank})"
+              ontouchstart="drlTouchStart(event,${q.id},${rank})"
+              ontouchmove="drlTouchMove(event,${q.id})"
+              ontouchend="drlTouchEnd(event,${q.id})">
+              <span class="drl-handle">☰</span>
+              <span class="drl-text">${q.items[itemIdx]}</span>
+            </div>`).join('')}
+        </div>
+      </div>`;
+    } else {
+      // Locked: show user's order with ✓/✕ per item
+      h+=`<div class="drag-list-wrap">
+        <div class="drag-list-hint">Your order:</div>
+        <div class="drag-reorder-list">
+          ${currentOrder.map((itemIdx,rank)=>{
+            const isCorr=q.correctOrder[rank]===itemIdx;
+            return`<div class="drl-item drl-locked ${isCorr?'drl-ok':'drl-bad'}">
+              <span class="drl-rank">${rank+1}</span>
+              <span class="drl-text">${q.items[itemIdx]}</span>
+              <span class="drl-result">${isCorr?'✓':'✕'}</span>
+            </div>`;
+          }).join('')}
+        </div>
+        <div class="drag-correct-wrap">
+          <div class="drag-correct-title">✓ Correct order</div>
+          ${q.correctOrder.map((itemIdx,rank)=>`<div class="drag-correct-item">${rank+1}. ${q.items[itemIdx]}</div>`).join('')}
+        </div>
+      </div>`;
+    }
+  }
 
 
   // ── FEEDBACK ──
@@ -1309,97 +1421,85 @@ function buildQ(q,showFeedback){
 }
 
 // ── Drag item HTML ──
-function diH(q,i,locked,pz){
-  let c='di';
-  if(locked&&pz!==undefined)c+=q.correctZones[i]===pz?' ok':' bad';
-  const dragHandlers=locked?'':
-    `draggable="true" `+
-    `ondragstart="doDragStart(event,${q.id},${i})" `+
-    `ontouchstart="touchStart(event,${q.id},${i})" `+
-    `ontouchmove="touchMove(event)" `+
-    `ontouchend="touchEnd(event,${q.id})"`;
-  return`<div class="${c}" ${dragHandlers} data-qid="${q.id}" data-idx="${i}">${q.items[i]}</div>`;
-}
+// ═══════════════════════════════════════════════════════════════
+// DRAG REORDER LIST — desktop mouse + mobile touch
+// ═══════════════════════════════════════════════════════════════
+let drlDragRank=null,drlDragQid=null;
+let drlTouchRank=null,drlTouchQid=null,drlTouchClone=null,drlTouchEl=null;
 
-// ── Drag/drop zone handlers ──
-function dzOver(e){e.preventDefault();e.currentTarget.classList.add('drag-over');}
-function dzLeave(e){e.currentTarget.classList.remove('drag-over');}
-
-// ═══════════════════════════════════════════════════════════════
-// MOUSE DRAG AND DROP
-// ═══════════════════════════════════════════════════════════════
-let dragInfo={qid:null,idx:null};
-function doDragStart(e,qid,idx){
-  dragInfo={qid,idx};
-  e.dataTransfer.effectAllowed='move';
-  e.dataTransfer.setData('text/plain',`${qid}:${idx}`);
+function drlGetOrder(qid){
+  const store=examMode==='tutor'?selections:answers;
+  return Array.isArray(store[qid])?[...store[qid]]:null;
 }
-function doDrop(e,qid,zi){
-  e.preventDefault();
-  document.querySelectorAll('.drop-zone').forEach(el=>el.classList.remove('drag-over'));
-  if(dragInfo.qid!==qid)return;
-  moveItem(qid,dragInfo.idx,zi);
-  dragInfo={qid:null,idx:null};
+function drlSetOrder(qid,order){
+  const store=examMode==='tutor'?selections:answers;
+  store[qid]=order;
+  saveSession();renderQ();
 }
-
-// ═══════════════════════════════════════════════════════════════
-// TOUCH DRAG AND DROP (iOS/iPad)
-// ═══════════════════════════════════════════════════════════════
-function touchStart(e,qid,idx){
+function drlSwap(qid,fromRank,toRank){
   if(examMode==='tutor'&&answers[qid]!==undefined)return;
-  touchDragQid=qid;touchDragIdx=idx;
-  touchDragEl=e.currentTarget;
-  // Create visual clone
-  touchClone=touchDragEl.cloneNode(true);
-  touchClone.style.cssText=`position:fixed;z-index:9999;pointer-events:none;opacity:0.8;background:var(--acc-l);border-color:var(--acc-m);border-radius:8px;padding:10px 12px;font-size:13px;color:var(--acc);`;
-  const rect=touchDragEl.getBoundingClientRect();
-  touchClone.style.width=rect.width+'px';
-  touchClone.style.left=rect.left+'px';
-  touchClone.style.top=rect.top+'px';
-  document.body.appendChild(touchClone);
-  touchDragEl.style.opacity='0.3';
+  if(fromRank===toRank)return;
+  const order=drlGetOrder(qid);
+  if(!order)return;
+  const item=order.splice(fromRank,1)[0];
+  order.splice(toRank,0,item);
+  drlSetOrder(qid,order);
 }
-function touchMove(e){
-  if(!touchClone)return;
+
+// ── Mouse drag ──
+function drlDragStart(e,qid,rank){
+  drlDragQid=qid;drlDragRank=rank;
+  e.dataTransfer.effectAllowed='move';
+  e.currentTarget.classList.add('drl-dragging');
+}
+function drlDragOver(e){
+  e.preventDefault();e.dataTransfer.dropEffect='move';
+  e.currentTarget.classList.add('drl-over');
+}
+function drlDragLeave(e){e.currentTarget.classList.remove('drl-over');}
+function drlDrop(e,qid,toRank){
+  e.preventDefault();
+  document.querySelectorAll('.drl-item').forEach(el=>el.classList.remove('drl-over','drl-dragging'));
+  if(drlDragQid!==qid)return;
+  drlSwap(qid,drlDragRank,toRank);
+  drlDragQid=null;drlDragRank=null;
+}
+
+// ── Touch drag ──
+function drlTouchStart(e,qid,rank){
+  if(examMode==='tutor'&&answers[qid]!==undefined)return;
+  drlTouchQid=qid;drlTouchRank=rank;
+  drlTouchEl=e.currentTarget;
+  const rect=drlTouchEl.getBoundingClientRect();
+  drlTouchClone=drlTouchEl.cloneNode(true);
+  drlTouchClone.style.cssText=`position:fixed;z-index:9999;pointer-events:none;opacity:0.85;width:${rect.width}px;left:${rect.left}px;top:${rect.top}px;border-radius:8px;background:var(--acc-l);border:.5px solid var(--acc-m);padding:12px 14px;font-size:14px;color:var(--acc);box-shadow:0 4px 16px rgba(0,0,0,.2);`;
+  document.body.appendChild(drlTouchClone);
+  drlTouchEl.style.opacity='0.3';
+}
+function drlTouchMove(e,qid){
+  if(!drlTouchClone)return;
   e.preventDefault();
   const t=e.touches[0];
-  touchClone.style.left=(t.clientX-touchClone.offsetWidth/2)+'px';
-  touchClone.style.top=(t.clientY-touchClone.offsetHeight/2)+'px';
-  // Highlight drop zones under touch point
-  document.querySelectorAll('.drop-zone').forEach(el=>el.classList.remove('drag-over'));
+  drlTouchClone.style.left=(t.clientX-drlTouchClone.offsetWidth/2)+'px';
+  drlTouchClone.style.top=(t.clientY-drlTouchClone.offsetHeight/2)+'px';
+  document.querySelectorAll('.drl-item').forEach(el=>el.classList.remove('drl-over'));
   const el=document.elementFromPoint(t.clientX,t.clientY);
-  const zone=el?.closest('.drop-zone');
-  if(zone)zone.classList.add('drag-over');
+  const target=el?.closest('.drl-item');
+  if(target&&target!==drlTouchEl)target.classList.add('drl-over');
 }
-function touchEnd(e,qid){
-  if(!touchClone)return;
+function drlTouchEnd(e,qid){
+  if(!drlTouchClone)return;
   const t=e.changedTouches[0];
-  // Clean up clone
-  document.body.removeChild(touchClone);touchClone=null;
-  if(touchDragEl)touchDragEl.style.opacity='';
-  document.querySelectorAll('.drop-zone').forEach(el=>el.classList.remove('drag-over'));
-  // Find drop target
+  document.body.removeChild(drlTouchClone);drlTouchClone=null;
+  if(drlTouchEl)drlTouchEl.style.opacity='';
   const el=document.elementFromPoint(t.clientX,t.clientY);
-  const zone=el?.closest('.drop-zone');
-  if(!zone){touchDragQid=null;touchDragIdx=null;touchDragEl=null;return;}
-  const zoneId=zone.id;
-  let zi=-1;
-  if(zoneId.startsWith('zone_')){
-    const parts=zoneId.split('_');zi=parseInt(parts[parts.length-1]);
+  const target=el?.closest('.drl-item');
+  document.querySelectorAll('.drl-item').forEach(el=>el.classList.remove('drl-over'));
+  if(target&&target!==drlTouchEl){
+    const toRank=parseInt(target.dataset.rank);
+    if(!isNaN(toRank))drlSwap(qid,drlTouchRank,toRank);
   }
-  moveItem(qid,touchDragIdx,zi);
-  touchDragQid=null;touchDragIdx=null;touchDragEl=null;
-}
-
-function moveItem(qid,idx,zi){
-  if(examMode==='tutor'&&answers[qid]!==undefined)return;
-  const q=activeQs.find(q=>q.id==qid);if(!q)return;
-  const store=examMode==='tutor'?selections:answers;
-  if(!store[qid])store[qid]={};
-  const numZones=q.zones.length;
-  for(let z=0;z<numZones;z++){if(store[qid][z])store[qid][z]=(store[qid][z]||[]).filter(i=>i!==idx);}
-  if(zi>=0){if(!store[qid][zi])store[qid][zi]=[];store[qid][zi].push(idx);}
-  saveSession();renderQ();
+  drlTouchQid=null;drlTouchRank=null;drlTouchEl=null;
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -1409,21 +1509,23 @@ function optClick(e,qid,idx,type){
   e.stopPropagation();
   if(examMode==='tutor'){
     if(answers[qid]!==undefined)return; // already submitted, locked
-    // If eliminated, un-eliminate and select in one tap
-    if(elim[qid] instanceof Set&&elim[qid].has(idx)){
-      elim[qid].delete(idx);
-    }
+    if(elim[qid] instanceof Set&&elim[qid].has(idx))elim[qid].delete(idx);
     if(!selections[qid])selections[qid]=[];
-    if(type==='mcq')selections[qid]=[idx];
-    else{if(selections[qid].includes(idx))selections[qid]=selections[qid].filter(x=>x!==idx);else selections[qid].push(idx);}
-  }else{
-    // If eliminated, un-eliminate and select in one tap
-    if(elim[qid] instanceof Set&&elim[qid].has(idx)){
-      elim[qid].delete(idx);
+    if(type==='mcq'){selections[qid]=[idx];}
+    else{
+      if(selections[qid].includes(idx))selections[qid]=selections[qid].filter(x=>x!==idx);
+      else selections[qid].push(idx);
+      if(selections[qid].length===0)selections[qid]=null; // null = no selections, distinct from []
     }
+  }else{
+    if(elim[qid] instanceof Set&&elim[qid].has(idx))elim[qid].delete(idx);
     if(!answers[qid])answers[qid]=[];
-    if(type==='mcq')answers[qid]=[idx];
-    else{if(answers[qid].includes(idx))answers[qid]=answers[qid].filter(x=>x!==idx);else answers[qid].push(idx);}
+    if(type==='mcq'){answers[qid]=[idx];}
+    else{
+      if(answers[qid].includes(idx))answers[qid]=answers[qid].filter(x=>x!==idx);
+      else answers[qid].push(idx);
+      if(answers[qid].length===0)answers[qid]=null; // null = no selections
+    }
   }
   saveSession();renderQ();
 }
@@ -1455,7 +1557,9 @@ function toggleGuess(qid){if(guessed[qid])delete guessed[qid];else guessed[qid]=
 function submitTutor(){
   const q=activeQs[curQ];
   if(answers[q.id]===undefined){
-    const sel=selections[q.id];
+    let sel=selections[q.id];
+    // Normalize empty SATA array to null so hasAnswer correctly identifies it as unanswered
+    if(Array.isArray(sel)&&sel.length===0)sel=null;
     answers[q.id]=(sel!==undefined)?sel:null;
   }
   saveSession();renderQ();
@@ -1463,7 +1567,7 @@ function submitTutor(){
 
 function nextQ(){if(curQ<activeQs.length-1){curQ++;hlMode=false;saveSession();renderQ();}}
 function checkTutorFinish(){
-  const unanswered=activeQs.filter(q=>answers[q.id]===undefined).length;
+  const unanswered=activeQs.filter(q=>answers[q.id]===undefined||!hasAnswer(q,answers[q.id])).length;
   if(unanswered>0){
     const go=confirm(`You have ${unanswered} unanswered question${unanswered!==1?'s':''} — you can go back and answer them. Finish anyway?`);
     if(!go)return;
@@ -1478,6 +1582,8 @@ function goTo(i){
 
 function backToSetup(){
   stopTimer();
+  try{localStorage.removeItem(SK);}catch(e){}
+  activeQs=[];curQ=0;answers={};selections={};guessed={};elim={};highlights={};optOrders={};examEnded=false;hlMode=false;
   hideAll();
   document.getElementById('start-screen').style.display='block';
   buildStatusFilter();updateCount();
@@ -1494,6 +1600,8 @@ function finalizeTest(timedOut){stopTimer();examEnded=true;saveSession();showRes
 // ── RESULTS ──────────────────────────────────────────────────────
 function showResults(){
   stopTimer();
+  // Clear saved session — a completed exam should not offer resume on next load
+  try{localStorage.removeItem(SK);}catch(e){}
   document.getElementById('exam-screen').style.display='none';
   document.getElementById('results-screen').style.display='block';
   let totalE=0,totalP=0;
@@ -1559,7 +1667,7 @@ function showResults(){
         <div style="font-size:12px;color:var(--tl);margin-top:4px;text-align:right">
           ${show.length>=3?`Trend: ${show[show.length-1].pct>show[0].pct?'📈 improving':'📉 declining'} · `:''}Avg: ${Math.round(show.reduce((a,e)=>a+e.pct,0)/show.length)}%
         </div>
-        <button class="filt-btn muted" style="margin-top:.75rem;font-size:11px" onclick="if(confirm('Clear all exam history?')){localStorage.removeItem(SK_HIST);showResults();}">Clear history</button>
+        <button class="filt-btn muted" style="margin-top:.75rem;font-size:11px" onclick="showModal('Clear exam history?','This will permanently delete your score trend history for the last 20 exams. Your Correct / Partial / Incorrect question status is not affected. This cannot be undone.','Clear history',()=>{closeModal();localStorage.removeItem(SK_HIST);showResults();})">Clear history</button>
       </div>
     </div>`;
   }
@@ -1584,7 +1692,7 @@ function showResults(){
 function retryIncorrect(){
   const wrong=activeQs.filter(q=>{const sc=scoreQ(q,answers[q.id]);return sc.detail==='zero'||sc.detail==='partial';});
   if(!wrong.length)return;
-  activeQs=wrong;curQ=0;answers={};selections={};guessed={};elim={};highlights={};examEnded=false;hlMode=false;
+  activeQs=wrong;curQ=0;answers={};selections={};guessed={};elim={};highlights={};optOrders={};examEnded=false;hlMode=false;
   examMode='tutor';
   try{localStorage.removeItem(SK);}catch(e){}
   hideAll();
@@ -1602,7 +1710,7 @@ function resetAllStatus(){
 
 function newExamFresh(){
   localStorage.removeItem(SK);
-  selTopics.clear();selFormats=new Set(ALL_FORMATS.map(f=>f.key));selStatuses.clear();
+  selTopics.clear();selChapterKeys.clear();selFormats=new Set(ALL_FORMATS.map(f=>f.key));selStatuses.clear();
   saveSettings();showBuilder();
 }
 
