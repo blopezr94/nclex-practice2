@@ -1017,6 +1017,13 @@ function getFiltered(){
     return BANK.filter(q=>{
       if(!selFormats.has(q.type))return false;
       if(selStatuses.size>0&&!selStatuses.has(getQStatus(q.id)))return false;
+      // Unassigned questions only appear when all chapters are selected (master select all)
+      if(q.unit==='Unassigned'){
+        const allChapters=[...selChapterKeys];
+        const allUnits=['Unit 1','Unit 2','Unit 3','Unit 4'];
+        const hasAllUnits=allUnits.every(u=>allChapters.some(k=>k.startsWith(u+'§')));
+        return hasAllUnits&&selTopics.has(q.topic);
+      }
       // Question must belong to a selected chapter OR have its topic selected via individual topic chip
       const chapKey=`${q.unit}§${q.chapter}`;
       const fromChapter=selChapterKeys.has(chapKey);
@@ -1027,6 +1034,7 @@ function getFiltered(){
   // Fallback: pure topic-name filtering (used when selecting individual topic chips)
   if(selTopics.size===0)return[];
   return BANK.filter(q=>{
+    if(q.unit==='Unassigned')return false; // hidden questions only appear via master select
     if(!selTopics.has(q.topic))return false;
     if(!selFormats.has(q.type))return false;
     if(selStatuses.size>0&&!selStatuses.has(getQStatus(q.id)))return false;
