@@ -877,18 +877,19 @@ const topicsByChapter=ch=>[...new Set(BANK.filter(q=>q.chapter===ch).map(q=>q.to
 
 function quickSelectChapter(unit,ch){
   const ts=topicsByUnitChapter(unit,ch);
-  const allSel=ts.every(t=>selTopics.has(t));
   const chapKey=`${unit}§${ch}`;
-  if(allSel){
-    // Deselect — remove topics (only remove if no other selected chapter in this unit uses same topic)
-    ts.forEach(t=>{
-      const otherChapterHasIt=BANK.some(q=>q.unit===unit&&q.chapter!==ch&&q.topic===t&&selChapterKeys.has(`${unit}§${q.chapter}`));
-      if(!otherChapterHasIt)selTopics.delete(t);
-    });
+  // Use chapKey as source of truth — prevents topic-name collisions (e.g. 'Sepsis' in Ch.12 AND AI Generated)
+  const isSelected=selChapterKeys.has(chapKey);
+  if(isSelected){
     selChapterKeys.delete(chapKey);
+    // Only remove a topic from selTopics if no other selected chapter still needs it
+    ts.forEach(t=>{
+      const stillNeeded=BANK.some(q=>q.topic===t&&selChapterKeys.has(`${q.unit}§${q.chapter}`));
+      if(!stillNeeded)selTopics.delete(t);
+    });
   }else{
-    ts.forEach(t=>selTopics.add(t));
     selChapterKeys.add(chapKey);
+    ts.forEach(t=>selTopics.add(t));
   }
   saveSettings();buildClassSections();updateCount();
 }
@@ -973,14 +974,21 @@ function toggleTopic(t){selTopics.has(t)?selTopics.delete(t):selTopics.add(t);sa
 function quickSelectUnit(unit){
   const UNIT_CHAPTERS=buildUnitChapters();
   const chapters=UNIT_CHAPTERS[unit]||[];
-  const ts=chapters.flatMap(ch=>topicsByUnitChapter(unit,ch));
-  const allSel=ts.every(t=>selTopics.has(t));
+  // Use chapKeys as source of truth to avoid topic-name collisions across chapters
+  const allSel=chapters.every(ch=>selChapterKeys.has(`${unit}§${ch}`));
   if(allSel){
-    ts.forEach(t=>selTopics.delete(t));
-    chapters.forEach(ch=>selChapterKeys.delete(`${unit}§${ch}`));
+    chapters.forEach(ch=>{
+      selChapterKeys.delete(`${unit}§${ch}`);
+      topicsByUnitChapter(unit,ch).forEach(t=>{
+        const stillNeeded=BANK.some(q=>q.topic===t&&selChapterKeys.has(`${q.unit}§${q.chapter}`));
+        if(!stillNeeded)selTopics.delete(t);
+      });
+    });
   }else{
-    ts.forEach(t=>selTopics.add(t));
-    chapters.forEach(ch=>selChapterKeys.add(`${unit}§${ch}`));
+    chapters.forEach(ch=>{
+      selChapterKeys.add(`${unit}§${ch}`);
+      topicsByUnitChapter(unit,ch).forEach(t=>selTopics.add(t));
+    });
   }
   saveSettings();buildClassSections();updateCount();
 }
